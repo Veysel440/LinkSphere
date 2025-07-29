@@ -25,8 +25,8 @@ class UserProfileController extends Controller
 
     public function updateProfile(UpdateUserProfileRequest $request)
     {
-        $this->profileService->updateUserProfile($request->user(), $request->only(['summary', 'headline', 'birth_date', 'location']));
-        return response()->json(['message' => 'Profil güncellendi!']);
+        $profile = $this->profileService->updateUserProfile($request->user(), $request->only(['summary', 'headline', 'birth_date', 'location']));
+        return response()->json(['message' => 'Profil güncellendi!', 'profile' => new UserProfileResource($profile)]);
     }
 
     public function showPrivacy(Request $request)
@@ -43,7 +43,7 @@ class UserProfileController extends Controller
 
     public function updatePrivacy(Request $request)
     {
-        $this->profileService->updateUserPrivacy($request->user(), $request->only(['profile_visible', 'can_receive_messages', 'share_activity_status']));
-        return response()->json(['message' => 'Gizlilik ayarları güncellendi!']);
+        $privacy = $this->profileService->updateUserPrivacy($request->user(), $request->only(['profile_visible', 'can_receive_messages', 'share_activity_status']));
+        return response()->json(['message' => 'Gizlilik ayarları güncellendi!', 'privacy' => $privacy]);
     }
 }

@@ -38,6 +38,10 @@ class User extends Authenticatable
     {
         return $this->hasOne(UserPrivacy::class);
     }
+    public function activityLogs()
+    {
+        return $this->hasMany(UserActivityLog::class);
+    }
     protected $hidden = [
         'password',
         'remember_token',

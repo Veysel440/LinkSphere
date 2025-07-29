@@ -16,8 +16,12 @@ class SendConnectionNotification
         $connection = $event->connection;
         $status = $event->status;
 
-        $receiver = User::find($connection->receiver_id);
-
-        Notification::send($receiver, new ConnectionNotification($connection, $status));
+        if ($status === 'pending') {
+            $receiver = User::find($connection->receiver_id);
+            $receiver?->notify(new ConnectionNotification($connection, $status));
+        } else {
+            $sender = User::find($connection->sender_id);
+            $sender?->notify(new ConnectionNotification($connection, $status));
+        }
     }
 }

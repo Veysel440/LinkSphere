@@ -5,29 +5,30 @@ namespace App\Repositories;
 use App\Models\User;
 use App\Models\UserSkill;
 
-class UserSkillRepository
+class UserSkillRepository implements UserSkillRepositoryInterface
 {
     public function getAll(User $user)
     {
-        return $user->skills()->orderByDesc('level')->get();
+        return $user->skills()->orderByDesc('created_at')->get();
     }
 
-    public function findById(User $user, $id): ?UserSkill
+    public function findById(User $user, $id)
     {
         return $user->skills()->where('id', $id)->first();
     }
 
-    public function create(User $user, array $data): UserSkill
+    public function create(User $user, array $data)
     {
         return $user->skills()->create($data);
     }
 
-    public function update(UserSkill $skill, array $data): bool
+    public function update(UserSkill $skill, array $data)
     {
-        return $skill->update($data);
+        $skill->update($data);
+        return $skill;
     }
 
-    public function delete(UserSkill $skill): bool
+    public function delete(UserSkill $skill)
     {
         return $skill->delete();
     }

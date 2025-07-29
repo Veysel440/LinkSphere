@@ -8,7 +8,6 @@ use App\Http\Requests\UserEducationRequest;
 use App\Http\Resources\UserEducationResource;
 use App\Services\UserEducationService;
 use Illuminate\Http\Request;
-
 class UserEducationController extends Controller
 {
     protected UserEducationService $service;
@@ -45,8 +44,8 @@ class UserEducationController extends Controller
         if (!$education) {
             return response()->json(['message' => 'Eğitim kaydı bulunamadı!'], 404);
         }
-        $this->service->update($education, $request->validated());
-        return new UserEducationResource($education);
+        $updated = $this->service->update($education, $request->validated());
+        return new UserEducationResource($updated);
     }
 
     public function destroy(Request $request, $id)

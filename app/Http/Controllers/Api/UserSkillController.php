@@ -44,8 +44,8 @@ class UserSkillController extends Controller
         if (!$skill) {
             return response()->json(['message' => 'Yetenek bulunamadı!'], 404);
         }
-        $this->service->update($skill, $request->validated());
-        return new UserSkillResource($skill);
+        $updated = $this->service->update($skill, $request->validated());
+        return new UserSkillResource($updated);
     }
 
     public function destroy(Request $request, $id)

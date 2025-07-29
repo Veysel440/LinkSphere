@@ -47,6 +47,26 @@ class UserConnectionRepository
         })->limit(20)->get();
     }
 
+    public function suggestFriends(User $user, $limit = 10)
+    {
+        $friendIds = $this->getConnections($user)->pluck('sender_id')
+            ->merge($this->getConnections($user)->pluck('receiver_id'))
+            ->unique()->filter(fn($id) => $id != $user->id);
+
+        $suggestedIds = UserConnection::whereIn('sender_id', $friendIds)
+            ->orWhereIn('receiver_id', $friendIds)
+            ->where('status', 'accepted')
+            ->get()
+            ->pluck('sender_id', 'receiver_id')
+            ->flatten()
+            ->unique()
+            ->diff($friendIds)
+            ->diff([$user->id])
+            ->take($limit);
+
+        return User::whereIn('id', $suggestedIds)->get();
+    }
+
     public function findConnection($senderId, $receiverId)
     {
         return UserConnection::where('sender_id', $senderId)

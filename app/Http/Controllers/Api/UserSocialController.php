@@ -44,8 +44,8 @@ class UserSocialController extends Controller
         if (!$social) {
             return response()->json(['message' => 'Sosyal medya bağlantısı bulunamadı!'], 404);
         }
-        $this->service->update($social, $request->validated());
-        return new UserSocialResource($social);
+        $updated = $this->service->update($social, $request->validated());
+        return new UserSocialResource($updated);
     }
 
     public function destroy(Request $request, $id)

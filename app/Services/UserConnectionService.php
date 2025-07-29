@@ -6,14 +6,20 @@ use App\Models\User;
 use App\Models\UserConnection;
 use App\Repositories\UserConnectionRepository;
 use App\Events\ConnectionStatusChanged;
+use App\Services\UserActivityLogService;
+use App\Enums\ActivityType;
 
 class UserConnectionService
 {
     protected UserConnectionRepository $repository;
+    protected UserActivityLogService $logService;
 
-    public function __construct(UserConnectionRepository $repository)
-    {
+    public function __construct(
+        UserConnectionRepository $repository,
+        UserActivityLogService $logService
+    ) {
         $this->repository = $repository;
+        $this->logService = $logService;
     }
 
     public function searchUsers($query)
@@ -32,8 +38,12 @@ class UserConnectionService
         }
         $connection = $this->repository->createConnection($sender->id, $receiverId);
 
-
+        // Event ve log
         event(new ConnectionStatusChanged($connection, $connection->status));
+        $this->logService->log($sender, ActivityType::CONNECTION_SENT, [
+            'to_user_id' => $receiverId,
+            'connection_id' => $connection->id,
+        ]);
 
         return $connection;
     }
@@ -49,17 +59,29 @@ class UserConnectionService
         }
         $updatedConnection = $this->repository->updateStatus($connection, $status);
 
-
+        // Event ve log
         event(new ConnectionStatusChanged($updatedConnection, $status));
+        $logType = match ($status) {
+            'accepted' => ActivityType::CONNECTION_ACCEPTED,
+            'rejected' => ActivityType::CONNECTION_REJECTED,
+            'blocked'  => ActivityType::CONNECTION_BLOCKED,
+            default    => 'connection_' . $status,
+        };
+        $this->logService->log($user, $logType, [
+            'from_user_id' => $connection->sender_id,
+            'connection_id' => $connection->id,
+        ]);
 
         return $updatedConnection;
     }
 
     public function unfriend(User $user, $otherUserId)
     {
-
         $deleted = $this->repository->deleteConnection($user->id, $otherUserId);
 
+        $this->logService->log($user, ActivityType::CONNECTION_DELETED, [
+            'other_user_id' => $otherUserId,
+        ]);
 
         return $deleted;
     }
@@ -68,9 +90,19 @@ class UserConnectionService
     {
         $blocked = $this->repository->blockUser($user->id, $blockedUserId);
 
+        // Event ve log
         event(new ConnectionStatusChanged($blocked, 'blocked'));
+        $this->logService->log($user, ActivityType::CONNECTION_BLOCKED, [
+            'blocked_user_id' => $blockedUserId,
+            'connection_id'   => $blocked->id ?? null,
+        ]);
 
         return $blocked;
+    }
+
+    public function suggestFriends(User $user, $limit = 10)
+    {
+        return $this->repository->suggestFriends($user, $limit);
     }
 
     public function connections(User $user)

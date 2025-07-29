@@ -28,10 +28,30 @@ class ConnectionNotification extends Notification
 
     public function toDatabase($notifiable)
     {
+        $sender = $this->connection->sender()->first();
         return [
             'connection_id' => $this->connection->id,
-            'status' => $this->status,
-            'sender_id' => $this->connection->sender_id,
+            'sender_id'     => $this->connection->sender_id,
+            'sender_name'   => $sender ? $sender->name : null,
+            'sender_avatar' => $sender ? $sender->avatar : null,
+            'status'        => $this->status,
+            'message'       => $this->buildMessage($sender),
         ];
+    }
+
+    private function buildMessage($sender)
+    {
+        switch ($this->status) {
+            case 'pending':
+                return "{$sender->name} sana bağlantı isteği gönderdi.";
+            case 'accepted':
+                return "{$sender->name} bağlantı isteğini kabul etti!";
+            case 'rejected':
+                return "{$sender->name} bağlantı isteğini reddetti.";
+            case 'blocked':
+                return "{$sender->name} seni engelledi.";
+            default:
+                return "Bağlantı güncellemesi";
+        }
     }
 }

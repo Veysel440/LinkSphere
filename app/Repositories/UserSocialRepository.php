@@ -5,29 +5,30 @@ namespace App\Repositories;
 use App\Models\User;
 use App\Models\UserSocial;
 
-class UserSocialRepository
+class UserSocialRepository implements UserSocialRepositoryInterface
 {
     public function getAll(User $user)
     {
-        return $user->socials()->orderBy('platform')->get();
+        return $user->socials()->orderByDesc('created_at')->get();
     }
 
-    public function findById(User $user, $id): ?UserSocial
+    public function findById(User $user, $id)
     {
         return $user->socials()->where('id', $id)->first();
     }
 
-    public function create(User $user, array $data): UserSocial
+    public function create(User $user, array $data)
     {
         return $user->socials()->create($data);
     }
 
-    public function update(UserSocial $social, array $data): bool
+    public function update(UserSocial $social, array $data)
     {
-        return $social->update($data);
+        $social->update($data);
+        return $social;
     }
 
-    public function delete(UserSocial $social): bool
+    public function delete(UserSocial $social)
     {
         return $social->delete();
     }

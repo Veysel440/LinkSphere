@@ -16,6 +16,12 @@ class UserConnectionController extends Controller
         $this->service = $service;
     }
 
+    public function suggest(Request $request)
+    {
+        $suggested = $this->service->suggestFriends($request->user());
+        return UserResource::collection($suggested);
+    }
+
     public function search(Request $request)
     {
         $query = $request->input('q');

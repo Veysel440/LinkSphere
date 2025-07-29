@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\UserActivityLogController;
 use App\Http\Controllers\Api\UserAvatarController;
 use App\Http\Controllers\Api\UserConnectionController;
 use App\Http\Controllers\Api\UserEducationController;
@@ -42,4 +43,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
     Route::get('notifications', [NotificationController::class, 'index']);
+    Route::post('notifications/read/{id}', [NotificationController::class, 'markAsRead']);
+
+    Route::get('connections/suggestions', [UserConnectionController::class, 'suggest']);
+
+    Route::get('user/activity-logs', [UserActivityLogController::class, 'index']);
+    Route::get('user/activity-logs/{id}', [UserActivityLogController::class, 'show']);
 });
+
+Route::get('user/activity-logs-summary', [UserActivityLogController::class, 'summary']);

@@ -3,55 +3,27 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Repositories\UserProfileRepositoryInterface;
+use App\Repositories\UserProfileRepository;
+use App\Repositories\UserExperienceRepositoryInterface;
+use App\Repositories\UserExperienceRepository;
+use App\Repositories\UserEducationRepositoryInterface;
+use App\Repositories\UserEducationRepository;
+use App\Repositories\UserSkillRepositoryInterface;
+use App\Repositories\UserSkillRepository;
+use App\Repositories\UserSocialRepositoryInterface;
+use App\Repositories\UserSocialRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->app->bind(
-            \App\Repositories\UserProfileRepository::class,
-            \App\Repositories\UserProfileRepository::class
-        );
-        $this->app->bind(
-            \App\Services\UserProfileService::class,
-            \App\Services\UserProfileService::class
-        );
 
-        $this->app->bind(
-            \App\Repositories\UserExperienceRepository::class,
-            \App\Repositories\UserExperienceRepository::class
-        );
-        $this->app->bind(
-            \App\Services\UserExperienceService::class,
-            \App\Services\UserExperienceService::class
-        );
-
-        $this->app->bind(
-            \App\Repositories\UserEducationRepository::class,
-            \App\Repositories\UserEducationRepository::class
-        );
-        $this->app->bind(
-            \App\Services\UserEducationService::class,
-            \App\Services\UserEducationService::class
-        );
-
-        $this->app->bind(
-            \App\Repositories\UserSkillRepository::class,
-            \App\Repositories\UserSkillRepository::class
-        );
-        $this->app->bind(
-            \App\Services\UserSkillService::class,
-            \App\Services\UserSkillService::class
-        );
-
-        $this->app->bind(
-            \App\Repositories\UserSocialRepository::class,
-            \App\Repositories\UserSocialRepository::class
-        );
-        $this->app->bind(
-            \App\Services\UserSocialService::class,
-            \App\Services\UserSocialService::class
-        );
+        $this->app->bind(UserProfileRepositoryInterface::class, UserProfileRepository::class);
+        $this->app->bind(UserExperienceRepositoryInterface::class, UserExperienceRepository::class);
+        $this->app->bind(UserEducationRepositoryInterface::class, UserEducationRepository::class);
+        $this->app->bind(UserSkillRepositoryInterface::class, UserSkillRepository::class);
+        $this->app->bind(UserSocialRepositoryInterface::class, UserSocialRepository::class);
     }
 
     public function boot(): void
