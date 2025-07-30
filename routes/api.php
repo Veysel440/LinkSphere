@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\Api\CommentController;
+use App\Http\Controllers\Api\LikeController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\ShareController;
 use App\Http\Controllers\Api\UserActivityLogController;
 use App\Http\Controllers\Api\UserAvatarController;
 use App\Http\Controllers\Api\UserConnectionController;
@@ -49,6 +52,15 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('user/activity-logs', [UserActivityLogController::class, 'index']);
     Route::get('user/activity-logs/{id}', [UserActivityLogController::class, 'show']);
+
+    Route::get('posts/{post}/comments', [CommentController::class, 'index']);
+    Route::post('posts/{post}/comments', [CommentController::class, 'store']);
+    Route::put('posts/{post}/comments/{id}', [CommentController::class, 'update']);
+    Route::delete('posts/{post}/comments/{id}', [CommentController::class, 'destroy']);
+    Route::post('posts/{post}/like', [LikeController::class, 'like']);
+    Route::post('posts/{post}/unlike', [LikeController::class, 'unlike']);
+    Route::post('posts/{post}/share', [ShareController::class, 'share']);
 });
 
 Route::get('user/activity-logs-summary', [UserActivityLogController::class, 'summary']);
+Route::middleware('auth:sanctum')->apiResource('posts', \App\Http\Controllers\Api\PostController::class);

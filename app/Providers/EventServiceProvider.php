@@ -11,5 +11,8 @@ class EventServiceProvider
         \App\Events\UserActivityLogged::class => [
             \App\Listeners\SendActivityNotification::class,
         ],
+            \App\Events\EducationCreated::class => [
+                \App\Listeners\SendEducationCreatedNotification::class,
+            ],
     ];
 }

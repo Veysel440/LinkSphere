@@ -8,6 +8,7 @@ use App\Models\UserEducation;
 use App\Repositories\UserEducationRepository;
 use App\Services\UserActivityLogService;
 use App\Enums\ActivityType;
+use App\Events\EducationCreated;
 
 class UserEducationService
 {
@@ -20,6 +21,15 @@ class UserEducationService
     ) {
         $this->repository = $repository;
         $this->logService = $logService;
+    }
+
+    public function addEducation(User $user, array $data)
+    {
+        $education = $this->repository->create($user, $data);
+
+        event(new EducationCreated($user, $education));
+
+        return $education;
     }
 
     public function list(User $user)

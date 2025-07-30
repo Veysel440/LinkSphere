@@ -30,6 +30,17 @@ class ActivityType
     const SOCIAL_UPDATED = 'social_updated';
     const SOCIAL_DELETED = 'social_deleted';
 
+    const POST_CREATED = 'post_created';
+    const POST_UPDATED = 'post_updated';
+    const POST_DELETED = 'post_deleted';
+
+    const COMMENT_CREATED = 'comment_created';
+
+    const POST_LIKED = 'post_liked';
+    const POST_UNLIKED = 'post_unliked';
+
+    const POST_SHARED = 'post_shared';
+
 
     const LOGIN               = 'login';
     const LOGOUT              = 'logout';

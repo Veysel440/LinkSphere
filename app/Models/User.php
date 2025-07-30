@@ -42,6 +42,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserActivityLog::class);
     }
+
+    public function comments() { return $this->hasMany(Comment::class); }
+    public function likes() { return $this->hasMany(Like::class); }
+    public function share() { return $this->hasMany(Share::class); }
+
     protected $hidden = [
         'password',
         'remember_token',
