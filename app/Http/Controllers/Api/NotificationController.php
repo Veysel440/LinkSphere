@@ -10,8 +10,11 @@ class NotificationController extends Controller
 {
     public function index(Request $request)
     {
-        $notifications = $request->user()->notifications()->limit(50)->latest()->get();
-        return response()->json($notifications);
+        $notifications = $request->user()->notifications()->latest()->paginate(30);
+
+        return response()->json([
+            'notifications' => $notifications,
+        ]);
     }
 
     public function markAsRead(Request $request, $id)

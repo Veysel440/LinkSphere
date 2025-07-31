@@ -14,5 +14,14 @@ class EventServiceProvider
             \App\Events\EducationCreated::class => [
                 \App\Listeners\SendEducationCreatedNotification::class,
             ],
+        \App\Events\CommentCreated::class => [
+            \App\Listeners\SendCommentCreatedNotification::class,
+        ],
+        \App\Events\PostLiked::class => [
+            \App\Listeners\SendPostLikedNotification::class,
+        ],
+        \App\Events\PostShared::class => [
+            \App\Listeners\SendPostSharedNotification::class,
+        ],
     ];
 }

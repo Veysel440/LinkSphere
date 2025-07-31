@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\CommentController;
+use App\Http\Controllers\Api\HashtagController;
 use App\Http\Controllers\Api\LikeController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\ShareController;
@@ -28,7 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('user/educations', UserEducationController::class)->except(['create', 'edit']);
     Route::apiResource('user/skills', UserSkillController::class)->except(['create', 'edit']);
     Route::apiResource('user/socials', UserSocialController::class)->except(['create', 'edit']);
-
+    Route::apiResource('posts', \App\Http\Controllers\Api\PostController::class);
 
     Route::post('user/avatar', [UserAvatarController::class, 'update']);
     Route::post('user/password', [UserPasswordController::class, 'update']);
@@ -60,7 +61,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('posts/{post}/like', [LikeController::class, 'like']);
     Route::post('posts/{post}/unlike', [LikeController::class, 'unlike']);
     Route::post('posts/{post}/share', [ShareController::class, 'share']);
+
+    Route::get('trends/hashtags', [HashtagController::class, 'trends']);
+    Route::get('hashtags/{tag}/posts', [HashtagController::class, 'search']);
+
+
 });
 
 Route::get('user/activity-logs-summary', [UserActivityLogController::class, 'summary']);
-Route::middleware('auth:sanctum')->apiResource('posts', \App\Http\Controllers\Api\PostController::class);
