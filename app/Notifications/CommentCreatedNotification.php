@@ -17,10 +17,6 @@ class CommentCreatedNotification extends Notification
         $this->comment = $comment;
     }
 
-    public function via($notifiable)
-    {
-        return ['database'];
-    }
 
     public function toDatabase($notifiable)
     {
@@ -31,5 +27,19 @@ class CommentCreatedNotification extends Notification
             'user_id'   => $this->comment->user_id,
             'message'   => 'Paylaşımına yeni bir yorum yapıldı!'
         ];
+    }
+
+    public function via($notifiable)
+    {
+        return ['database', 'mail', 'webpush'];
+    }
+
+    public function toWebPush($notifiable, $notification)
+    {
+        return (new \NotificationChannels\WebPush\WebPushMessage)
+            ->title('Yeni yorum!')
+            ->icon('/icon.png')
+            ->body($this->comment->user->name . ' paylaşımına yorum yaptı!')
+            ->action('Gör', url('/posts/' . $this->comment->post_id));
     }
 }

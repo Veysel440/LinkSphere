@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\CommentController;
+use App\Http\Controllers\Api\DiscoverController;
 use App\Http\Controllers\Api\HashtagController;
 use App\Http\Controllers\Api\LikeController;
 use App\Http\Controllers\Api\NotificationController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\Api\ShareController;
 use App\Http\Controllers\Api\UserActivityLogController;
 use App\Http\Controllers\Api\UserAvatarController;
 use App\Http\Controllers\Api\UserConnectionController;
+use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserEducationController;
 use App\Http\Controllers\Api\UserExperienceController;
 use App\Http\Controllers\Api\UserPasswordController;
@@ -69,3 +71,7 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::get('user/activity-logs-summary', [UserActivityLogController::class, 'summary']);
+Route::get('hashtags/autocomplete', [HashtagController::class, 'autocomplete']);
+Route::get('users/autocomplete', [UserController::class, 'mentionAutocomplete']);
+Route::middleware('auth:sanctum')->get('discover/posts', [DiscoverController::class, 'posts']);
+Route::middleware('auth:sanctum')->get('discover/users', [DiscoverController::class, 'users']);

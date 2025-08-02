@@ -31,4 +31,20 @@ class HashtagController extends Controller
             'posts' => $posts,
         ]);
     }
+
+    public function autocomplete(Request $request)
+    {
+        $q = $request->query('q');
+        $tags = \DB::table('posts')
+            ->select(\DB::raw('JSON_UNQUOTE(JSON_EXTRACT(tags, CONCAT("$[", n.n, "]"))) as tag'))
+            ->join(\DB::raw('(SELECT 0 n UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5) n'), \DB::raw('JSON_LENGTH(tags) > n.n'), [])
+            ->whereNotNull('tags')
+            ->whereRaw('JSON_UNQUOTE(JSON_EXTRACT(tags, CONCAT("$[", n.n, "]"))) LIKE ?', ["$q%"])
+            ->groupBy('tag')
+            ->orderByRaw('COUNT(*) DESC')
+            ->limit(10)
+            ->pluck('tag');
+
+        return response()->json(['suggestions' => $tags]);
+    }
 }
