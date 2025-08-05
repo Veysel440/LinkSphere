@@ -3,9 +3,10 @@
 namespace App\Repositories;
 
 
-use App\Models\User;
-use App\Models\Post;
+use App\Interface\CommentRepositoryInterface;
 use App\Models\Comment;
+use App\Models\Post;
+use App\Models\User;
 
 class CommentRepository implements CommentRepositoryInterface
 {

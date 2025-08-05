@@ -2,8 +2,9 @@
 
 namespace App\Repositories;
 
-use App\Models\User;
+use App\Interface\ShareRepositoryInterface;
 use App\Models\Post;
+use App\Models\User;
 
 class ShareRepository implements ShareRepositoryInterface
 {

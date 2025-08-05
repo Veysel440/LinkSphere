@@ -1,21 +1,21 @@
 <?php
 
-use App\Http\Controllers\Api\CommentController;
-use App\Http\Controllers\Api\DiscoverController;
-use App\Http\Controllers\Api\HashtagController;
-use App\Http\Controllers\Api\LikeController;
-use App\Http\Controllers\Api\NotificationController;
-use App\Http\Controllers\Api\ShareController;
-use App\Http\Controllers\Api\UserActivityLogController;
-use App\Http\Controllers\Api\UserAvatarController;
-use App\Http\Controllers\Api\UserConnectionController;
-use App\Http\Controllers\Api\UserController;
-use App\Http\Controllers\Api\UserEducationController;
-use App\Http\Controllers\Api\UserExperienceController;
-use App\Http\Controllers\Api\UserPasswordController;
-use App\Http\Controllers\Api\UserProfileController;
-use App\Http\Controllers\Api\UserSkillController;
-use App\Http\Controllers\Api\UserSocialController;
+use App\Http\Controllers\Api\Comment\CommentController;
+use App\Http\Controllers\Api\Discover\DiscoverController;
+use App\Http\Controllers\Api\Hashtag\HashtagController;
+use App\Http\Controllers\Api\Like\LikeController;
+use App\Http\Controllers\Api\Notification\NotificationController;
+use App\Http\Controllers\Api\Share\ShareController;
+use App\Http\Controllers\Api\User\UserActivityLogController;
+use App\Http\Controllers\Api\User\UserAvatarController;
+use App\Http\Controllers\Api\User\UserConnectionController;
+use App\Http\Controllers\Api\User\UserController;
+use App\Http\Controllers\Api\User\UserEducationController;
+use App\Http\Controllers\Api\User\UserExperienceController;
+use App\Http\Controllers\Api\User\UserPasswordController;
+use App\Http\Controllers\Api\User\UserProfileController;
+use App\Http\Controllers\Api\User\UserSkillController;
+use App\Http\Controllers\Api\User\UserSocialController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -31,7 +31,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('user/educations', UserEducationController::class)->except(['create', 'edit']);
     Route::apiResource('user/skills', UserSkillController::class)->except(['create', 'edit']);
     Route::apiResource('user/socials', UserSocialController::class)->except(['create', 'edit']);
-    Route::apiResource('posts', \App\Http\Controllers\Api\PostController::class);
+    Route::apiResource('posts', \App\Http\Controllers\Api\Post\PostController::class);
 
     Route::post('user/avatar', [UserAvatarController::class, 'update']);
     Route::post('user/password', [UserPasswordController::class, 'update']);

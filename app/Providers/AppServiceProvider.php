@@ -2,25 +2,25 @@
 
 namespace App\Providers;
 
+use App\Interface\CommentRepositoryInterface;
+use App\Interface\LikeRepositoryInterface;
+use App\Interface\PostRepositoryInterface;
+use App\Interface\ShareRepositoryInterface;
+use App\Interface\UserEducationRepositoryInterface;
+use App\Interface\UserExperienceRepositoryInterface;
+use App\Interface\UserProfileRepositoryInterface;
+use App\Interface\UserSkillRepositoryInterface;
+use App\Interface\UserSocialRepositoryInterface;
 use App\Repositories\CommentRepository;
-use App\Repositories\CommentRepositoryInterface;
 use App\Repositories\LikeRepository;
-use App\Repositories\LikeRepositoryInterface;
 use App\Repositories\PostRepository;
-use App\Repositories\PostRepositoryInterface;
 use App\Repositories\ShareRepository;
-use App\Repositories\ShareRepositoryInterface;
-use Illuminate\Support\ServiceProvider;
-use App\Repositories\UserProfileRepositoryInterface;
-use App\Repositories\UserProfileRepository;
-use App\Repositories\UserExperienceRepositoryInterface;
-use App\Repositories\UserExperienceRepository;
-use App\Repositories\UserEducationRepositoryInterface;
 use App\Repositories\UserEducationRepository;
-use App\Repositories\UserSkillRepositoryInterface;
+use App\Repositories\UserExperienceRepository;
+use App\Repositories\UserProfileRepository;
 use App\Repositories\UserSkillRepository;
-use App\Repositories\UserSocialRepositoryInterface;
 use App\Repositories\UserSocialRepository;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -36,6 +36,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(CommentRepositoryInterface::class, CommentRepository::class);
         $this->app->bind(LikeRepositoryInterface::class, LikeRepository::class);
         $this->app->bind(ShareRepositoryInterface::class, ShareRepository::class);
+        $this->app->singleton(\App\Services\Security\KeywordFilterService::class);
 
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Interface\UserExperienceRepositoryInterface;
 use App\Models\User;
 use App\Models\UserExperience;
 

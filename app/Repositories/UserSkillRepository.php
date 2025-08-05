@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Interface\UserSkillRepositoryInterface;
 use App\Models\User;
 use App\Models\UserSkill;
 

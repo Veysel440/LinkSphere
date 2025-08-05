@@ -5,6 +5,7 @@ namespace App\Notifications;
 use App\Models\Comment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
+use NotificationChannels\WebPush\WebPushMessage;
 
 class CommentCreatedNotification extends Notification
 {
@@ -17,6 +18,10 @@ class CommentCreatedNotification extends Notification
         $this->comment = $comment;
     }
 
+    public function via($notifiable)
+    {
+        return ['database', 'mail', 'webpush'];
+    }
 
     public function toDatabase($notifiable)
     {
@@ -29,14 +34,20 @@ class CommentCreatedNotification extends Notification
         ];
     }
 
-    public function via($notifiable)
+    public function toMail($notifiable)
     {
-        return ['database', 'mail', 'webpush'];
+        return (new \Illuminate\Notifications\Messages\MailMessage)
+            ->subject('Paylaşımına Yeni Yorum Geldi')
+            ->greeting('Merhaba ' . $notifiable->name)
+            ->line($this->comment->user->name . ' paylaşımına yorum yaptı:')
+            ->line($this->comment->content)
+            ->action('Yorumu Gör', url('/posts/' . $this->comment->post_id))
+            ->line('İyi günler!');
     }
 
     public function toWebPush($notifiable, $notification)
     {
-        return (new \NotificationChannels\WebPush\WebPushMessage)
+        return (new WebPushMessage)
             ->title('Yeni yorum!')
             ->icon('/icon.png')
             ->body($this->comment->user->name . ' paylaşımına yorum yaptı!')

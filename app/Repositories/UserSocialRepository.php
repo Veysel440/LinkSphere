@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Interface\UserSocialRepositoryInterface;
 use App\Models\User;
 use App\Models\UserSocial;
 

@@ -3,14 +3,17 @@
 namespace App\Repositories;
 
 
-use App\Models\User;
+use App\Interface\PostRepositoryInterface;
 use App\Models\Post;
+use App\Models\User;
 
 class PostRepository implements PostRepositoryInterface
 {
     public function getFeed(User $user, $limit = 20)
     {
-        return Post::whereIn('user_id', [$user->id] + $user->followings()->pluck('id')->toArray())
+        $followingIds = $user->followings()->pluck('id')->toArray() ?? [];
+        $ids = array_unique(array_merge([$user->id], $followingIds));
+        return Post::whereIn('user_id', $ids)
             ->latest()
             ->with('user')
             ->paginate($limit);

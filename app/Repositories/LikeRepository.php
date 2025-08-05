@@ -3,8 +3,9 @@
 namespace App\Repositories;
 
 
-use App\Models\User;
+use App\Interface\LikeRepositoryInterface;
 use App\Models\Post;
+use App\Models\User;
 
 class LikeRepository implements LikeRepositoryInterface
 {
