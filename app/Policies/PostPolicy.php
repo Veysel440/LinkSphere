@@ -19,4 +19,12 @@ class PostPolicy
     {
         return !$user->is_banned;
     }
+    public function like(User $user, Post $post)
+    {
+        return !$user->is_banned;
+    }
+    public function share(User $user, Post $post)
+    {
+        return !$user->is_banned;
+    }
 }

@@ -2,11 +2,13 @@
 
 namespace App\Services\Share;
 
-use App\Enums\ActivityType;
+
 use App\Interface\ShareRepositoryInterface;
-use App\Models\Post;
 use App\Models\User;
+use App\Models\Post;
 use App\Services\User\UserActivityLogService;
+use App\Enums\ActivityType;
+use App\Events\PostShared;
 
 class ShareService
 {
@@ -22,13 +24,17 @@ class ShareService
     public function share(User $user, Post $post)
     {
         $share = $this->repository->share($user, $post);
-        $post->increment('share_count');
 
         $this->logService->log($user, ActivityType::POST_SHARED, [
             'post_id' => $post->id,
-            'share_id'=> $share->id,
         ]);
 
+        event(new PostShared($user, $post));
         return $share;
+    }
+
+    public function count(Post $post): int
+    {
+        return $this->repository->count($post);
     }
 }

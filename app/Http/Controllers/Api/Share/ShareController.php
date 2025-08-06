@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api\Share;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Share\ShareRequest;
+use App\Http\Resources\Share\ShareResource;
 use App\Models\Post;
 use App\Services\Share\ShareService;
-use Illuminate\Http\Request;
-
 
 class ShareController extends Controller
 {
@@ -15,12 +15,13 @@ class ShareController extends Controller
     public function __construct(ShareService $service)
     {
         $this->service = $service;
+        $this->middleware('auth:sanctum');
     }
 
-    public function share(Request $request, $postId)
+    public function share(ShareRequest $request)
     {
-        $post = Post::findOrFail($postId);
+        $post = Post::findOrFail($request->input('post_id'));
         $share = $this->service->share($request->user(), $post);
-        return response()->json(['message' => 'Paylaşıldı', 'share_id' => $share->id]);
+        return new ShareResource($share);
     }
 }

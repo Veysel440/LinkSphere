@@ -33,6 +33,7 @@ class ActivityType
     const POST_CREATED = 'post_created';
     const POST_UPDATED = 'post_updated';
     const POST_DELETED = 'post_deleted';
+    const REPORT_CREATED = 'report_created';
 
     const COMMENT_CREATED = 'comment_created';
 

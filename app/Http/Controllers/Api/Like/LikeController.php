@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Api\Like;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Like\LikeRequest;
+use App\Http\Resources\Like\LikeResource;
 use App\Models\Post;
 use App\Services\Like\LikeService;
-use Illuminate\Http\Request;
 
 class LikeController extends Controller
 {
@@ -14,19 +15,13 @@ class LikeController extends Controller
     public function __construct(LikeService $service)
     {
         $this->service = $service;
+        $this->middleware('auth:sanctum');
     }
 
-    public function like(Request $request, $postId)
+    public function toggle(LikeRequest $request)
     {
-        $post = Post::findOrFail($postId);
-        $this->service->like($request->user(), $post);
-        return response()->json(['liked' => true]);
-    }
-
-    public function unlike(Request $request, $postId)
-    {
-        $post = Post::findOrFail($postId);
-        $this->service->unlike($request->user(), $post);
-        return response()->json(['liked' => false]);
+        $post = Post::findOrFail($request->input('post_id'));
+        $liked = $this->service->toggle($request->user(), $post);
+        return response()->json(['liked' => $liked]);
     }
 }

@@ -2,18 +2,16 @@
 
 namespace App\Events;
 
-use App\Models\Like;
+use App\Models\User;
+use App\Models\Post;
 use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Queue\SerializesModels;
 
 class PostLiked
 {
-    use Dispatchable, SerializesModels;
+    use Dispatchable;
 
-    public Like $like;
-
-    public function __construct(Like $like)
-    {
-        $this->like = $like;
-    }
+    public function __construct(
+        public User $user,
+        public Post $post
+    ) {}
 }

@@ -2,12 +2,13 @@
 
 namespace App\Interface;
 
-use App\Models\Post;
 use App\Models\User;
+use App\Models\Post;
+use App\Models\Like;
 
 interface LikeRepositoryInterface
 {
-    public function like(User $user, Post $post);
-    public function unlike(User $user, Post $post);
-    public function isLiked(User $user, Post $post): bool;
+    public function toggleLike(User $user, Post $post);
+    public function hasLiked(User $user, Post $post): bool;
+    public function count(Post $post): int;
 }

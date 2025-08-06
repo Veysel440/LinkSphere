@@ -2,11 +2,12 @@
 
 namespace App\Services\Like;
 
-use App\Enums\ActivityType;
 use App\Interface\LikeRepositoryInterface;
-use App\Models\Post;
 use App\Models\User;
+use App\Models\Post;
 use App\Services\User\UserActivityLogService;
+use App\Enums\ActivityType;
+use App\Events\PostLiked;
 
 class LikeService
 {
@@ -19,32 +20,28 @@ class LikeService
         $this->logService = $logService;
     }
 
-    public function like(User $user, Post $post)
+    public function toggle(User $user, Post $post)
     {
-        $like = $this->repository->like($user, $post);
-        $post->increment('like_count');
+        $liked = $this->repository->toggleLike($user, $post);
 
-        $this->logService->log($user, ActivityType::POST_LIKED, [
+        $this->logService->log($user, $liked ? ActivityType::POST_LIKED : ActivityType::POST_UNLIKED, [
             'post_id' => $post->id,
         ]);
 
-        return $like;
+        if ($liked) {
+            event(new PostLiked($user, $post));
+        }
+
+        return $liked;
     }
 
-    public function unlike(User $user, Post $post)
+    public function hasLiked(User $user, Post $post): bool
     {
-        $result = $this->repository->unlike($user, $post);
-        $post->decrement('like_count');
-
-        $this->logService->log($user, ActivityType::POST_UNLIKED, [
-            'post_id' => $post->id,
-        ]);
-
-        return $result;
+        return $this->repository->hasLiked($user, $post);
     }
 
-    public function isLiked(User $user, Post $post): bool
+    public function count(Post $post): int
     {
-        return $this->repository->isLiked($user, $post);
+        return $this->repository->count($post);
     }
 }

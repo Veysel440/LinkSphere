@@ -2,18 +2,16 @@
 
 namespace App\Events;
 
-use App\Models\Share;
+use App\Models\User;
+use App\Models\Post;
 use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Queue\SerializesModels;
 
 class PostShared
 {
-    use Dispatchable, SerializesModels;
+    use Dispatchable;
 
-    public Share $share;
-
-    public function __construct(Share $share)
-    {
-        $this->share = $share;
-    }
+    public function __construct(
+        public User $user,
+        public Post $post
+    ) {}
 }
