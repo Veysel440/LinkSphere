@@ -20,7 +20,7 @@ class MessageService
     public function send(User $sender, int $receiverId, string $content): Message
     {
         $message = $this->repository->send($sender, $receiverId, $content);
-        
+
         event(new MessageSent($message));
         $message->receiver->notify(new MessageSentNotification($message));
 
