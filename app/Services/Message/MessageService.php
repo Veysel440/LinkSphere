@@ -2,40 +2,43 @@
 
 namespace App\Services\Message;
 
-use App\Events\MessageSent;
-use App\Models\Message;
+use App\Interface\MessageRepositoryInterface;
 use App\Models\User;
+use App\Models\Message;
+use App\Events\MessageSent;
+use App\Notifications\MessageSentNotification;
 
 class MessageService
 {
-    public function sendPrivate(User $sender, User $receiver, array $data)
-    {
-        $message = Message::create([
-            'sender_id' => $sender->id,
-            'receiver_id' => $receiver->id,
-            'content' => $data['content'] ?? null,
-            'media' => $data['media'] ?? null,
-        ]);
+    protected MessageRepositoryInterface $repository;
 
-        event(new MessageSent($message, $receiver->id));
-        return $message;
+    public function __construct(MessageRepositoryInterface $repository)
+    {
+        $this->repository = $repository;
     }
 
-    public function sendGroup(User $sender, $groupId, array $data)
+    public function send(User $sender, int $receiverId, string $content): Message
     {
-        $message = Message::create([
-            'sender_id' => $sender->id,
-            'group_id' => $groupId,
-            'content' => $data['content'] ?? null,
-            'media' => $data['media'] ?? null,
-        ]);
+        $message = $this->repository->send($sender, $receiverId, $content);
+        
+        event(new MessageSent($message));
+        $message->receiver->notify(new MessageSentNotification($message));
 
         return $message;
     }
 
-    public function markAsRead(Message $message)
+    public function getConversation(User $user, int $otherUserId, $limit = 30)
     {
-        $message->is_read = true;
-        $message->save();
+        return $this->repository->conversation($user, $otherUserId, $limit);
+    }
+
+    public function markAsRead(Message $message): Message
+    {
+        return $this->repository->markAsRead($message);
+    }
+
+    public function unreadCount(User $user, int $fromUserId = null): int
+    {
+        return $this->repository->unreadCount($user, $fromUserId);
     }
 }

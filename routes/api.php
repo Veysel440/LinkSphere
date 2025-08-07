@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\Comment\CommentController;
 use App\Http\Controllers\Api\Discover\DiscoverController;
 use App\Http\Controllers\Api\Hashtag\HashtagController;
 use App\Http\Controllers\Api\Like\LikeController;
+use App\Http\Controllers\Api\Message\MessageController;
 use App\Http\Controllers\Api\Notification\NotificationController;
 use App\Http\Controllers\Api\Report\ReportController;
 use App\Http\Controllers\Api\Share\ShareController;
@@ -74,6 +75,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('hashtags/trends', [HashtagController::class, 'trends']);
     Route::get('hashtags/{tag}/posts', [HashtagController::class, 'search']);
     Route::get('hashtags/autocomplete', [HashtagController::class, 'autocomplete']);
+
+    Route::get('messages/{otherUserId}', [MessageController::class, 'conversation']);
+    Route::post('messages/send', [MessageController::class, 'send']);
+    Route::post('messages/{id}/read', [MessageController::class, 'markAsRead']);
+    Route::get('messages/unread-count/{fromUserId?}', [MessageController::class, 'unreadCount']);
 });
 
 Route::get('hashtags/trends', [HashtagController::class, 'trends']);

@@ -2,26 +2,49 @@
 
 namespace App\Http\Controllers\Api\Message;
 
-use App\Http\Controllers\Api\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Message\SendMessageRequest;
+use App\Http\Resources\Message\MessageResource;
+use App\Models\Message;
+use App\Services\Message\MessageService;
+use Illuminate\Http\Request;
 
-class MessageController
+class MessageController extends Controller
 {
-    public function send(Request $request)
+    protected MessageService $service;
+
+    public function __construct(MessageService $service)
     {
-        $receiver = \App\Models\User::findOrFail($request->input('receiver_id'));
-        $message = $this->service->sendPrivate($request->user(), $receiver, $request->all());
-        return response()->json(['message' => $message]);
+        $this->service = $service;
+        $this->middleware('auth:sanctum');
     }
 
-    public function list(Request $request, $userId)
+    public function conversation(Request $request, $otherUserId)
     {
-        $messages = \App\Models\Message::where(function ($q) use ($request, $userId) {
-            $q->where('sender_id', $request->user()->id)->where('receiver_id', $userId);
-        })->orWhere(function ($q) use ($request, $userId) {
-            $q->where('sender_id', $userId)->where('receiver_id', $request->user()->id);
-        })->orderBy('created_at', 'asc')->get();
-
-        return response()->json(['messages' => $messages]);
+        $messages = $this->service->getConversation($request->user(), $otherUserId);
+        return MessageResource::collection($messages);
     }
 
+    public function send(SendMessageRequest $request)
+    {
+        $msg = $this->service->send(
+            $request->user(),
+            $request->input('receiver_id'),
+            $request->input('content')
+        );
+        return new MessageResource($msg);
+    }
+
+    public function markAsRead(Request $request, $id)
+    {
+        $message = Message::findOrFail($id);
+        $this->service->markAsRead($message);
+        return new MessageResource($message);
+    }
+
+    public function unreadCount(Request $request, $fromUserId = null)
+    {
+        $count = $this->service->unreadCount($request->user(), $fromUserId);
+        return response()->json(['unread' => $count]);
+    }
 }
